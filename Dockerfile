@@ -18,13 +18,12 @@ RUN apt-get update && apt-get install -y \
 
 # Copy only requirements.txt to leverage Docker caching
 COPY app/requirements.txt .
-COPY app/model/Matane_Model.h5 /app/model/Matane_Model.h5
 
 # Install Python dependencies
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
+# Copy the entire project into the container, including the model
 COPY . .
 
 # Expose the required port
