@@ -9,8 +9,8 @@ ENV PYTHONUNBUFFERED=1 \
 # Create and set the working directory
 WORKDIR /app
 
-# Install system dependencies required for bcrypt
-RUN apt-get update && apt-get install -y \
+# Install system dependencies required for bcrypt and other packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libffi-dev \
     libssl-dev \
@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the application
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "server:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:$PORT", "server:app"]
