@@ -9,8 +9,8 @@ ENV PYTHONUNBUFFERED=1 \
 # Create and set the working directory
 WORKDIR /app
 
-# Install system dependencies required for bcrypt and other packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies required for bcrypt
+RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
     libssl-dev \
