@@ -23,9 +23,7 @@ hasil_mapping = {
     8: "Infeksi Mata Kering"
 }
 
-model_path = "app\model\Matane_Model.h5"
-model = load_model(filepath=model_path)
-print("Model Exist:", os.path.exists(model_path))
+model = load_model('app\models\model.h5')
 
 def predict():
     if not amIAllowed():
