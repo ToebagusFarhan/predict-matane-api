@@ -14,5 +14,3 @@ def amIAllowed():
         # Log the exception if needed
         print(f"An error occurred: {e}")
         return False
-    
-print(os.environ.get('API_KEY'))

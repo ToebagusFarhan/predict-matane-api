@@ -11,6 +11,12 @@ from app.utils.apiauth import amIAllowed
 # Flask Blueprint for predict-related routes
 predict_controller = Blueprint("predict_controller", __name__)
 
+# little test for /
+def home():
+    if not amIAllowed():
+        return jsonify({"error": "You are not authorized"}), 401
+    return jsonify({"message": "Hello, World!"})
+
 hasil_mapping = {
     0: "Katarak: Dengan Tingkat Immature",
     1: "Mata Anda Sehat, Tidak Mengalami Katarak, dan Infeksi Mata Kering",
@@ -23,30 +29,49 @@ hasil_mapping = {
     8: "Infeksi Mata Kering"
 }
 
-model = load_model('app\models\model.h5')
+if os.environ.get("Environment") == "production":
+    model_path = "/mnt/bucket/models/model.h5"
+    model = load_model(model_path)
+else:
+    model_path = "app/models/model.h5"
+    model = load_model(model_path)
 
 def predict():
     if not amIAllowed():
         return jsonify({"error": "You are not allowed to access this route"}), 401
     
     if "image" not in request.files:
-        return jsonify({"error": "There's no file here boi, don't eat it swiper!"}), 400
+        return jsonify({"error": "No file provided"}), 400
 
     file = request.files["image"]
 
     if file.filename == "":
         return jsonify({"error": "No selected file"}), 400
+    
     try:
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             file.save(temp_file.name)
+
+            # Validate image type
+            import imghdr
+            file_type = imghdr.what(temp_file.name)
+            if file_type not in ["jpeg", "png", "bmp"]:
+                return jsonify({"error": "Unsupported file format"}), 400
+
+            # Preprocess image
             img = load_img(temp_file.name, target_size=(224, 224))
             img_array = img_to_array(img) / 255.0
             img_array = np.expand_dims(img_array, axis=0)
 
+            # Predict
             predictions = model.predict(img_array)
             hasil_index = np.argmax(predictions)
-            hasil = hasil_mapping.get(hasil_index, "invalid")
+            hasil = hasil_mapping.get(hasil_index, "Error,  Invalid result")
 
             return jsonify({"result": hasil})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        # Ensure temp file cleanup
+        if os.path.exists(temp_file.name):
+            os.remove(temp_file.name)

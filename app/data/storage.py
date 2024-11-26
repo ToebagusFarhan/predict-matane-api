@@ -1,13 +1,12 @@
 import os
-import datetime
+from datetime import datetime
 from google.cloud import storage
 from google.oauth2 import service_account
+
 
 from dotenv import load_dotenv
 load_dotenv()
 
-
-bucket_name = os.environ.get("BUCKET_NAME")
 status = os.environ.get("Environment")
 print(status)
 
@@ -34,10 +33,4 @@ def upload_blob_to_folder(source_file_name, destination_folder_name, destination
     print(f"File {source_file_name} uploaded to {destination_folder_name}/{destination_blob_name}.")
     
 
-def generate_presigned_url_for_profile(blob_name, expiration=3600):
-    bucket = get_bucket(bucket_name)
-    blob = bucket.blob(f"userProfile/{blob_name}")
-    url = blob.generate_signed_url(version="v4", expiration=datetime.timedelta(seconds=expiration), method='GET')
-    return url
-
-
+    
