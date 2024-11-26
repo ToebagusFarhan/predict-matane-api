@@ -66,12 +66,15 @@ def predict():
             # Predict
             predictions = model.predict(img_array)
             hasil_index = np.argmax(predictions)
-            hasil = hasil_mapping.get(hasil_index, "Error,  Invalid result")
+            hasil = hasil_mapping.get(hasil_index, "Error, Invalid result")
 
+            # Return result as a JSON object
             return jsonify({"result": hasil})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
         # Ensure temp file cleanup
         if os.path.exists(temp_file.name):
+            os.remove(temp_file.name)
+
             os.remove(temp_file.name)
