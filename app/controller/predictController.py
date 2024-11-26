@@ -38,7 +38,7 @@ else:
 
 def predict():
     if not amIAllowed():
-        return jsonify({"error": "You are not allowed to access this route"}), 401
+        return render_template("error/401.html"), 401
     
     if "image" not in request.files:
         return jsonify({"error": "No file provided"}), 400
