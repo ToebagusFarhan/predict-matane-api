@@ -1,0 +1,11 @@
+{% extends "error/error.html" %} {% block title %}Unauthorized{% endblock %} {%
+block content %}
+<div class="error-image">
+  <img src="/static/401.jpg" alt="Unauthorized Access" />
+</div>
+
+<section>
+  <h2>401 - Unauthorized</h2>
+  <p>You do not have permission to view this resource.</p>
+</section>
+{% endblock %}

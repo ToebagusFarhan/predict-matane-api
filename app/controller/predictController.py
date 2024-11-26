@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 import numpy as np
 from keras.models import load_model
 from keras.utils import img_to_array, load_img
@@ -14,7 +14,7 @@ predict_controller = Blueprint("predict_controller", __name__)
 # little test for /
 def home():
     if not amIAllowed():
-        return jsonify({"error": "You are not authorized"}), 401
+        return render_template("error/401.html"), 401
     return jsonify({"message": "Hello, World!"})
 
 hasil_mapping = {
@@ -33,7 +33,7 @@ if os.environ.get("Environment") == "production":
     model_path = "/mnt/bucket/models/model.h5"
     model = load_model(model_path)
 else:
-    model_path = "app/models/model.h5"
+    model_path = "app/model-local/model.h5"
     model = load_model(model_path)
 
 def predict():
