@@ -56,6 +56,7 @@ def predict():
             import imghdr
             file_type = imghdr.what(temp_file.name)
             if file_type not in ["jpeg", "png", "bmp"]:
+                os.remove(temp_file.name)  # Cleanup here if the file is invalid
                 return jsonify({"error": "Unsupported file format"}), 400
 
             # Preprocess image
@@ -75,6 +76,4 @@ def predict():
     finally:
         # Ensure temp file cleanup
         if os.path.exists(temp_file.name):
-            os.remove(temp_file.name)
-
             os.remove(temp_file.name)
